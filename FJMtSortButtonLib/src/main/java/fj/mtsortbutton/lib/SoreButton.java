@@ -30,8 +30,9 @@ public class SoreButton extends LinearLayout {
     View soreView;
     private List<Integer> listView;
 
+    //接口
     private ViewControl viewControl;
-
+    //设置接口
     public void setViewControl(ViewControl viewControl) {
         this.viewControl = viewControl;
     }
@@ -51,26 +52,26 @@ public class SoreButton extends LinearLayout {
         listView.add(R.layout.viewpager_default);
     }
 
-        //初始化ViewPager
-        private void initViewPager(){
-            listSoreView = new ArrayList<>();
-            LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            int size = listView.size();
-            for (int i = 0; i < size; i++) {
-                //循环拿到传入的View
-                soreView = layoutInflater.inflate(listView.get(i), null);
-                //通过接口回掉的形式返回当前的View,实现接口后开源拿到每个View然后进行操作
-                if (viewControl!=null){
-                    viewControl.setView(soreView,i);
-                }
-                //将获取到的View添加到List中
-                listSoreView.add(soreView);
+    //初始化ViewPager
+    private void initViewPager(){
+        listSoreView = new ArrayList<>();
+        LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        int size = listView.size();
+        for (int i = 0; i < size; i++) {
+            //循环拿到传入的View
+            soreView = layoutInflater.inflate(listView.get(i), null);
+            //通过接口回掉的形式返回当前的View,实现接口后开源拿到每个View然后进行操作
+            if (viewControl!=null){
+                viewControl.setView(soreView,i);
             }
-            //设置viewPager的Adapter
-            viewPager.setAdapter(new ViewPagerAdapter(listSoreView));
-            //初始化LinearLayout，加入指示器
-            initLinearLayout(viewPager, size, llIndicator);
+            //将获取到的View添加到List中
+            listSoreView.add(soreView);
         }
+        //设置viewPager的Adapter
+        viewPager.setAdapter(new ViewPagerAdapter(listSoreView));
+        //初始化LinearLayout，加入指示器
+        initLinearLayout(viewPager, size, llIndicator);
+    }
 
     /**
      * 设置指示器，设置ViewPager滑动事件监听
@@ -79,7 +80,7 @@ public class SoreButton extends LinearLayout {
      * @param linearLayout --LinearLayout
      */
     private void initLinearLayout(ViewPager viewPager, int pageSize, LinearLayout linearLayout) {
-        //创建数组放置指示器的点，pageSize是View个数
+        //定义数组放置指示器的点，pageSize是View个数
         final ImageView[] imageViews = new ImageView[pageSize];
         for (int i = 0; i < pageSize; i++) {
             //创建ImageView
@@ -104,17 +105,10 @@ public class SoreButton extends LinearLayout {
 
         //ViewPager的滑动事件
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
             @Override
-            public void onPageScrollStateChanged(int arg0) {
-
-            }
-
+            public void onPageScrollStateChanged(int arg0) {}
             @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-            }
-
+            public void onPageScrolled(int arg0, float arg1, int arg2) {}
             @Override
             public void onPageSelected(int arg0) {
                 //arg0当前ViewPager
@@ -158,7 +152,6 @@ public class SoreButton extends LinearLayout {
      * @return
      */
     public SoreButton setView(List<Integer> listView){
-        this.listView = new ArrayList<>();
         this.listView = listView;
         return this;
     }

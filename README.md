@@ -39,6 +39,7 @@
 	</dependency>
 
 **2、使用方法**
+
 1）xml文件
 
     <anfq.mtsorebutton.lib.SoreButton

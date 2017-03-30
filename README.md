@@ -42,7 +42,7 @@
 
 1）xml文件
 
-    <anfq.mtsorebutton.lib.SoreButton
+    <fj.mtsortbutton.lib.SoreButton
         android:id="@+id/soreButton"
         android:background="#ffffff"
         android:layout_width="match_parent"

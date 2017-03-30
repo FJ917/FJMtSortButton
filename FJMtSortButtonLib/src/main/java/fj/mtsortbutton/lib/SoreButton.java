@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -26,12 +25,9 @@ public class SoreButton extends LinearLayout {
     //圆点间距
     private int distance = 10;
 
-    List<View> listSoreView = new ArrayList<>();
-    View soreView;
     private List<Integer> listView;
-
-    //接口
     private ViewControl viewControl;
+
     //设置接口
     public void setViewControl(ViewControl viewControl) {
         this.viewControl = viewControl;
@@ -53,30 +49,18 @@ public class SoreButton extends LinearLayout {
     }
 
     //初始化ViewPager
-    private void initViewPager(){
-        listSoreView = new ArrayList<>();
-        LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        int size = listView.size();
-        for (int i = 0; i < size; i++) {
-            //循环拿到传入的View
-            soreView = layoutInflater.inflate(listView.get(i), null);
-            //通过接口回掉的形式返回当前的View,实现接口后开源拿到每个View然后进行操作
-            if (viewControl!=null){
-                viewControl.setView(soreView,i);
-            }
-            //将获取到的View添加到List中
-            listSoreView.add(soreView);
-        }
+    private void initViewPager() {
         //设置viewPager的Adapter
-        viewPager.setAdapter(new ViewPagerAdapter(listSoreView));
+        viewPager.setAdapter(new ViewPagerAdapter(listView, viewControl));
         //初始化LinearLayout，加入指示器
-        initLinearLayout(viewPager, size, llIndicator);
+        initLinearLayout(viewPager, listView.size(), llIndicator);
     }
 
     /**
      * 设置指示器，设置ViewPager滑动事件监听
-     * @param viewPager --ViewPager
-     * @param pageSize --View的页数
+     *
+     * @param viewPager    --ViewPager
+     * @param pageSize     --View的页数
      * @param linearLayout --LinearLayout
      */
     private void initLinearLayout(ViewPager viewPager, int pageSize, LinearLayout linearLayout) {
@@ -96,8 +80,8 @@ public class SoreButton extends LinearLayout {
                 image.setImageResource(RadioUnselected);
             }
             //设置宽高
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LayoutParams params = new LayoutParams(
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             params.setMargins(distance, 0, distance, 0);
             //将点添加到LinearLayout中
             linearLayout.addView(image, params);
@@ -106,9 +90,13 @@ public class SoreButton extends LinearLayout {
         //ViewPager的滑动事件
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrollStateChanged(int arg0) {}
+            public void onPageScrollStateChanged(int arg0) {
+            }
+
             @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {}
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
             @Override
             public void onPageSelected(int arg0) {
                 //arg0当前ViewPager
@@ -126,39 +114,45 @@ public class SoreButton extends LinearLayout {
 
     /**
      * 设置圆点距离
-     * @param distance  --距离
+     *
+     * @param distance --距离
      * @return
      */
-    public SoreButton setDistance(int distance){
+    public SoreButton setDistance(int distance) {
         this.distance = distance;
         return this;
     }
+
     /**
      * 设置指示器图片
-     * @param radioSelect       --选中图片
-     * @param radioUnselected   --未选中图片
+     *
+     * @param radioSelect     --选中图片
+     * @param radioUnselected --未选中图片
      * @return
      */
-    public SoreButton setIndicator(int radioSelect,int radioUnselected){
+    public SoreButton setIndicator(int radioSelect, int radioUnselected) {
         //选中图片
         RadioSelect = radioSelect;
         //未选中图片
         RadioUnselected = radioUnselected;
         return this;
     }
+
     /**
      * 设置view
-     * @param listView   --view
+     *
+     * @param listView --view
      * @return
      */
-    public SoreButton setView(List<Integer> listView){
+    public SoreButton setView(List<Integer> listView) {
         this.listView = listView;
         return this;
     }
+
     /**
      * 设置初始化
      */
-    public SoreButton init(){
+    public SoreButton init() {
         initViewPager();
         return this;
     }

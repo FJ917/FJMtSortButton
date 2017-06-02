@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DynamicSoreView">
+        <!--设置选中点-->
+        <attr name="SoreRadioSelect" format="reference" />
+        <!--设置最未选中点-->
+        <attr name="SoreRadioUnselected" format="reference" />
+        <!--设置圆点间距-->
+        <attr name="SoreDistance" format="integer" />
+        <!--设置每页显示几个-->
+        <attr name="SoreNumber" format="integer" />
+    </declare-styleable>
+</resources>

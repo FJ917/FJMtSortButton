@@ -6,43 +6,58 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import fj.mtsortbutton.lib.Interface.IDynamicSore;
 import fj.mtsortbutton.lib.Interface.ViewControl;
 import fj.mtsortbutton.lib.adapter.ViewPagerAdapter;
 
-
-public class SoreButton extends LinearLayout {
+/**
+ * @author FengTong
+ * @date 2017/6/1
+ */
+public class DynamicSoreView<T> extends LinearLayout {
     Context mContext;
     private ViewPager viewPager;
     private LinearLayout llIndicator;
-    //选中图片
+
+    //选中点
     private int RadioSelect;
-    //未选中图片
+    //未选中点
     private int RadioUnselected;
     //圆点间距
     private int distance;
+    //每页展示几个
+    private int number;
+    //展示数据的gridView
+    private Integer gridView;
+    //总页数
+    private int page;
+    //数据List
+    private List<T> dataList;
 
     List<View> listSoreView = new ArrayList<>();
     View soreView;
-    private List<Integer> listView;
+
 
     //接口
-    private ViewControl viewControl;
+    private IDynamicSore iDynamicSore;
     //设置接口
-    public void setViewControl(ViewControl viewControl) {
-        this.viewControl = viewControl;
+    public IDynamicSore getiDynamicSore() {
+        return iDynamicSore;
     }
 
-    public SoreButton(Context context) {
-        super(context);
+    public void setiDynamicSore(IDynamicSore iDynamicSore) {
+        this.iDynamicSore = iDynamicSore;
     }
 
-    public SoreButton(Context context, AttributeSet attrs) {
+    public DynamicSoreView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.anfq_sore_button, this, true);
@@ -57,24 +72,45 @@ public class SoreButton extends LinearLayout {
             RadioUnselected = typedArray.getResourceId(R.styleable.DynamicSoreView_SoreRadioUnselected, R.drawable.radio_unselected);
             //圆点间距
             distance = typedArray.getInteger(R.styleable.DynamicSoreView_SoreDistance,10);
+            //每页显示几个
+            number = typedArray.getInteger(R.styleable.DynamicSoreView_SoreNumber,8);
             typedArray.recycle();
         }
+
         //设置空布局
-        listView = new ArrayList<>();
-        listView.add(R.layout.viewpager_default);
+        gridView = R.layout.viewpager_default;
     }
 
     //初始化ViewPager
     private void initViewPager(){
         listSoreView = new ArrayList<>();
         LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        int size = listView.size();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < page; i++) {
             //循环拿到传入的View
-            soreView = layoutInflater.inflate(listView.get(i), null);
+            soreView = layoutInflater.inflate(gridView, null);
             //通过接口回掉的形式返回当前的View,实现接口后开源拿到每个View然后进行操作
-            if (viewControl!=null){
-                viewControl.setView(soreView,i);
+            if (iDynamicSore!=null){
+                List<T> data;
+                int total = dataList.size();
+                if(i == page-1){
+                    //添加按钮
+                    data = new ArrayList<>();
+                    for(int j = i*number;j<total;j++){
+                        data.add(dataList.get(j));
+                    }
+                }else{
+                    data = new ArrayList<>();
+                    int size;
+                    if(total< number){
+                        size = total;
+                    }else{
+                        size = (i+1)*number;
+                    }
+                    for(int j = i*number;j<size;j++){
+                        data.add(dataList.get(j));
+                    }
+                }
+                iDynamicSore.setGridView(soreView,i,data);
             }
             //将获取到的View添加到List中
             listSoreView.add(soreView);
@@ -82,7 +118,7 @@ public class SoreButton extends LinearLayout {
         //设置viewPager的Adapter
         viewPager.setAdapter(new ViewPagerAdapter(listSoreView));
         //初始化LinearLayout，加入指示器
-        initLinearLayout(viewPager, size, llIndicator);
+        initLinearLayout(viewPager, page, llIndicator);
     }
 
     /**
@@ -138,42 +174,29 @@ public class SoreButton extends LinearLayout {
     }
 
     /**
-     * 设置圆点距离
-     * @param distance  --距离
+     * 设置view
+     * @param gridView
      * @return
      */
-    @Deprecated
-    public SoreButton setDistance(int distance){
-        this.distance = distance;
-        return this;
-    }
-    /**
-     * 设置指示器图片
-     * @param radioSelect       --选中图片
-     * @param radioUnselected   --未选中图片
-     * @return
-     */
-    @Deprecated
-    public SoreButton setIndicator(int radioSelect,int radioUnselected){
-        //选中图片
-        RadioSelect = radioSelect;
-        //未选中图片
-        RadioUnselected = radioUnselected;
+    public DynamicSoreView setGridView(Integer gridView){
+        this.gridView = gridView;
         return this;
     }
     /**
      * 设置view
-     * @param listView   --view
+     * @param gridView
      * @return
      */
-    public SoreButton setView(List<Integer> listView){
-        this.listView = listView;
+    public DynamicSoreView setNumColumns(GridView gridView){
+        gridView.setNumColumns(number/2);//设置每行GridView个数
         return this;
     }
     /**
      * 设置初始化
      */
-    public SoreButton init(){
+    public DynamicSoreView init(List<T> t){
+        this.dataList = t;
+        this.page = (int)Math.ceil((double) t.size()/number);//计算出有几页/这里用了ceil函数凑整，2.1=3
         initViewPager();
         return this;
     }

@@ -5,88 +5,64 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import fj.mtsortbutton.lib.Interface.ViewControl;
-import fj.mtsortbutton.lib.SoreButton;
+import fj.mtsortbutton.lib.DynamicSoreView;
+import fj.mtsortbutton.lib.Interface.IDynamicSore;
 import fj.mtsortbutton.test.adapter.SortButtonAdapter;
 import fj.mtsortbutton.test.model.ButtonModel;
 
-public class MainActivity extends AppCompatActivity implements ViewControl {
+public class Main2Activity extends AppCompatActivity implements IDynamicSore {
 
     private Context context;
-    private SoreButton soreButton;
+    private DynamicSoreView dynamicSoreView;
     private List<Integer> list;
 
+    List buttonList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         context = this;
-        soreButton = (SoreButton) findViewById(R.id.soreButton);
+        dynamicSoreView = (DynamicSoreView) findViewById(R.id.dynamicSoreView);
 
-        //设置界面监听
-        soreButton.setViewControl(this);
-        //添加界面到list
-        list = new ArrayList<>();
-        list.add(R.layout.viewpager_page);
-        list.add(R.layout.viewpager_page);
-        list.add(R.layout.viewpager_page_text);
-
-        //控件相关设置
-//        soreButton
-//                //设置选中和未选中指示器图标
-//                .setIndicator(R.drawable.radio1,R.drawable.radio2)
-//                //设置指示器半间距px
-//                .setDistance(10)
-//                //设置view组
-//                .setView(list)
-//                .init();
-        soreButton.setView(list).init();
+        data();
+        Button button = (Button) findViewById(R.id.btn);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data();
+            }
+        });
     }
 
+    private void data(){
+        buttonList = setData();//模拟服务器获取到的按钮列表
+        //设置界面监听
+        dynamicSoreView.setiDynamicSore(this);
+        //控件相关设置
+        dynamicSoreView.setGridView(R.layout.viewpager_page).init(buttonList);
+    }
+
+
     @Override
-    public void setView(View view, final int type) {
-        switch (type) {
-            case 0://第一个界面
-                GridView gridView = (GridView) view.findViewById(R.id.gridView);
-                SortButtonAdapter adapter = new SortButtonAdapter(this,setData());
-                gridView.setAdapter(adapter);
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(context,"第"+type+"页"+position,Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case 1://第二个界面
-                GridView gridView2 = (GridView) view.findViewById(R.id.gridView);
-                SortButtonAdapter adapter2 = new SortButtonAdapter(this,setData2());
-                gridView2.setAdapter(adapter2);
-                gridView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(context,"第"+type+"页"+position,Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case 2://第三个界面
-                TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-                tvTitle.setText("可高度定制，可设置任意layout,并且在回调中获取该layout内的所有控件");
-                tvTitle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context,"点击了该文字",Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-        }
+    public void setGridView(View view, final int type, List data) {
+        List<ButtonModel> buttonModels= data;
+        GridView gridView = (GridView) view.findViewById(R.id.gridView);
+        dynamicSoreView.setNumColumns(gridView);
+        SortButtonAdapter adapter = new SortButtonAdapter(this,buttonModels);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(context,"第"+type+"页"+position,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private List<ButtonModel> setData(){
@@ -95,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements ViewControl {
         buttonModel.setDrawableIcon(R.drawable.icon_1);
         buttonModel.setName("美食");
         data.add(buttonModel);
-
+        
         buttonModel = new ButtonModel();
         buttonModel.setDrawableIcon(R.drawable.icon_2);
         buttonModel.setName("电影");
@@ -132,12 +108,8 @@ public class MainActivity extends AppCompatActivity implements ViewControl {
         buttonModel.setDrawableIcon(R.drawable.icon_10);
         buttonModel.setName("旅游出行");
         data.add(buttonModel);
-        return data;
-    }
 
-    private List<ButtonModel> setData2(){
-        List<ButtonModel> data = new ArrayList<>();
-        ButtonModel buttonModel = new ButtonModel();
+        buttonModel = new ButtonModel();
         buttonModel.setDrawableIcon(R.drawable.icon_11);
         buttonModel.setName("品质酒店");
         data.add(buttonModel);
@@ -179,4 +151,5 @@ public class MainActivity extends AppCompatActivity implements ViewControl {
         data.add(buttonModel);
         return data;
     }
+
 }

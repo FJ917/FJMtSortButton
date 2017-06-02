@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fj.mtsortbutton.lib.DynamicSoreView
+        android:id="@+id/dynamicSoreView"
+        android:background="#ffffff"
+        app:SoreRadioSelect="@drawable/radio1"
+        app:SoreRadioUnselected="@drawable/radio2"
+        app:SoreNumber="6"
+        app:SoreDistance="20"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"/>
+
+    <Button
+        android:id="@+id/btn"
+        android:text="刷新"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

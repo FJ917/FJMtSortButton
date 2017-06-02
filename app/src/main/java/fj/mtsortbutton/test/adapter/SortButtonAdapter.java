@@ -8,16 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.List;
 
 import fj.mtsortbutton.test.R;
+import fj.mtsortbutton.test.model.ButtonModel;
 
-public class ButtonAdapter extends BaseAdapter {
+public class SortButtonAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater inflater;
-    private List<HashMap> data;
-    public ButtonAdapter(Context context, List<HashMap> data) {
+    private List<ButtonModel> data;
+    public SortButtonAdapter(Context context, List<ButtonModel> data) {
         this.mContext = context;
         this.inflater = LayoutInflater.from(context);
         this.data = data;
@@ -50,8 +50,8 @@ public class ButtonAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        holder.name.setText(data.get(position).get("name").toString());
-        holder.icon.setImageResource((Integer) data.get(position).get("icon"));
+        holder.name.setText(data.get(position).getName());
+        holder.icon.setImageResource(data.get(position).getDrawableIcon());
         return view;
     }
     class ViewHolder {

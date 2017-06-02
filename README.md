@@ -5,13 +5,13 @@
 
 > ### 栗子惯例，先上GIF
 
-![栗子.gif](http://upload-images.jianshu.io/upload_images/2071764-c9416063ff366935.gif)
+![栗子.gif](http://upload-images.jianshu.io/upload_images/2071764-c9416063ff366935.gif
 
-#### v1.0版本
 
-## 一、使用姿势
 
-**1、引入（使用Gradle或者Maven）**
+## 使用姿势
+
+**引入（使用Gradle或者Maven）**
 1）Gradle
 
     allprojects {
@@ -21,7 +21,7 @@
         }
     }
     dependencies {
-        compile 'com.github.FJ917:FJMtSortButton:v1.0'
+        compile 'com.github.FJ917:FJMtSortButton:v1.1'
     }
 2）Maven
 
@@ -35,18 +35,79 @@
 	<dependency>
 	    <groupId>com.github.FJ917</groupId>
 	    <artifactId>FJMtSortButton</artifactId>
-	    <version>v1.0</version>
+	    <version>v1.1</version>
 	</dependency>
+	
+---
 
-**2、使用方法**
+#### v1.1版本
+## 新增自定义控件DynamicSoreView
+实现通过服务器获取的数据，动态添加按钮，可以设置每页显示的个数。
+## 使用方法
+1）xml文件
+```
+    <fj.mtsortbutton.lib.DynamicSoreView
+        android:id="@+id/dynamicSoreView"
+        android:background="#ffffff"
+        app:SoreRadioSelect="@drawable/radio1"
+        app:SoreRadioUnselected="@drawable/radio2"
+        app:SoreNumber="6"
+        app:SoreDistance="20"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"/>
+```
+2 )java
+```
+    private void data(){
+        buttonList = setData();//模拟服务器获取到的按钮列表
+        //设置界面监听
+        dynamicSoreView.setiDynamicSore(this);
+        //控件相关设置
+        dynamicSoreView.setGridView(R.layout.viewpager_page).init(buttonList);
+    }
+
+
+    @Override
+    public void setGridView(View view, final int type, List data) {
+        List<ButtonModel> buttonModels= data;
+        GridView gridView = (GridView) view.findViewById(R.id.gridView);
+        dynamicSoreView.setNumColumns(gridView);
+        SortButtonAdapter adapter = new SortButtonAdapter(this,buttonModels);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(context,"第"+type+"页"+position,Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+```
+
+#### 说明：修改了1.0里的使用方式，但原来的也可以用，详细参考1.0使用方法
+---
+
+#### v1.0版本
+
+## 使用方法
 
 1）xml文件
-
+```
+	<!--以前 -->
     <fj.mtsortbutton.lib.SoreButton
         android:id="@+id/soreButton"
         android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="170dp"/>
+	<!-- 修改 -->
+	<fj.mtsortbutton.lib.SoreButton
+        android:id="@+id/soreButton"
+        android:background="#ffffff"
+        app:SoreRadioSelect="@drawable/radio1"
+        app:SoreRadioUnselected="@drawable/radio2"
+        app:SoreDistance="20"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"/>
+```	
         
 2）java文件
 1.对自定义控件做一些设置
@@ -60,6 +121,7 @@
         list.add(R.layout.viewpager_page_text);
 
         //控件相关设置
+		//以前
         soreButton
                 //设置选中和未选中指示器图标
                 .setIndicator(R.drawable.radio1,R.drawable.radio2)
@@ -68,6 +130,8 @@
                 //设置view组
                 .setView(list)
                 .init();
+		//修改（废弃了设置参数的方法，但是也可以用，只是建议在xml设置）
+		soreButton.setView(list).init();
 将layout的布局add进去list中，然后调用setView方法把list传过去，
 还提供了设置指示器图标的方法，以及指示器间距的方法，最后必须调用初始化方法init进行初始化
 

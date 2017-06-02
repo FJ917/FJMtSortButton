@@ -5,13 +5,14 @@
 
 > ### 栗子惯例，先上GIF
 
-![栗子.gif](http://upload-images.jianshu.io/upload_images/2071764-c9416063ff366935.gif
+![栗子.gif](http://upload-images.jianshu.io/upload_images/2071764-c9416063ff366935.gif)
 
 
 
 ## 使用姿势
 
 **引入（使用Gradle或者Maven）**
+
 1）Gradle
 
     allprojects {
